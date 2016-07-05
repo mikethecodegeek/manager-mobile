@@ -1,0 +1,22 @@
+<ion-view title="Manager's Special">
+    <ion-content padding="'false'" class="has-header">
+
+        <ion-list ng-repeat="item in menu_items">
+
+			<ion-item class="item-thumbnail-left" >
+                <img  ng-src="{{item.pic}}"  ng-click="showProductInfo(item._id,item.description,item.pic,item.name,item.price)" >
+
+				<p style="position:absolute;right:10px;">
+				<a  ng-click="addToCart(item._id,item.pic,item.name,item.price)" class="button  button-balanced button-clear   icon ion-android-cart">  </a>
+				</p>
+
+				<h2  ng-click="showProductInfo(item._id,item.description,item.pic,item.name,item.price)" > {{item.name}} </h2>
+                <p   ng-click="showProductInfo(item._id,item.description,item.pic,item.name,item.price)">Price: ${{item.price}}</p>
+                  <p   ng-click="showProductInfo(item._id,item.description,item.pic,item.name,item.price)">{{item.store.name}} - {{item.store.address.city}}, {{item.store.address.state}}</p>
+			</ion-item>
+
+
+        </ion-list>
+
+    </ion-content>
+</ion-view>
