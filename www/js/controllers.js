@@ -1,32 +1,50 @@
 angular.module('app.controllers', [])
 
 
+.controller('homeCtrl', function($scope,$http,sharedCartService,sharedFilterService,showStores) {
+
+
+	var cart = sharedCartService.cart;
+	$scope.noMoreItemsAvailable = false; // lazy load list
+  var listings = showStores.getAll()
+  .then(stores => {
+    console.log(stores)
+    $scope.stores = stores.data
+  })
+
+  $scope.showStoreProducts = function(products) {
+    //console.log(products)
+    if (products.viewing) {products.viewing = false}
+    else {products.viewing = true;}
+  }
+
+	 //show product page
+	$scope.showProductInfo=function (id,desc,img,name,price) {
+    console.log(id,desc,img,name,price)
+		 sessionStorage.setItem('product_info_id', id);
+		 sessionStorage.setItem('product_info_desc', desc);
+		 sessionStorage.setItem('product_info_img', img);
+		 sessionStorage.setItem('product_info_name', name);
+		 sessionStorage.setItem('product_info_price', price);
+		 window.location.href = "#/page13";
+	 };
+
+	 //add to cart function
+	 $scope.addToCart=function(id,image,name,price){
+		cart.add(id,image,name,price,1);
+	 };
+})
+
 .controller('menuCtrl', function($scope,$http,sharedCartService,sharedFilterService,showStores) {
 
 
-	//put cart after menu
 	var cart = sharedCartService.cart;
-
 	$scope.noMoreItemsAvailable = false; // lazy load list
-
-
   var listings = showStores.getAll()
   .then(stores => {
     console.log(stores)
     $scope.menu_items = stores.data
   })
-
-  	//loads the menu----onload event
-	$scope.$on('$stateChangeSuccess', function() {
-		$scope.loadMore();  //Added Infine Scroll
-	});
-
-	// Loadmore() called inorder to load the list
-	$scope.loadMore = function() {
-
-
-	};
-
 
 	 //show product page
 	$scope.showProductInfo=function (id,desc,img,name,price) {

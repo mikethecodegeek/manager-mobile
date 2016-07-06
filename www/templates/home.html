@@ -1,0 +1,30 @@
+<ion-view title="Manager's Special">
+<ion-content padding="'false'" class="has-header">
+
+  <ion-list ng-repeat="store in stores">
+
+  <ion-item class="item-thumbnail-left" ng-click="showStoreProducts(store)">
+    <img  ng-src="{{store.pic}}">
+    <h2>{{store.name}} </h2>
+    <p>{{store.address.address}}</p>
+    <p>{{store.address.city}},{{store.address.state}}</p>
+    <p>{{store.phone}}</p>
+    <ion-list ng-repeat="item in store.listings" ng-show="store.viewing">
+
+  <ion-item class="item-thumbnail-left" >
+    <img  ng-src="{{item.pic}}"  ng-click="showProductInfo(item._id,item.description,item.pic,item.name,item.price)" >
+    <p style="position:absolute;right:10px;">
+    <a  ng-click="addToCart(item._id,item.pic,item.name,item.price)" class="button  button-balanced button-clear   icon ion-android-cart">  </a>
+    </p>
+
+    <h2  ng-click="showProductInfo(item._id,item.description,item.pic,item.name,item.price)" > {{item.name}} </h2>
+            <p   ng-click="showProductInfo(item._id,item.description,item.pic,item.name,item.price)">Price: ${{item.price}}</p>
+              <p   ng-click="showProductInfo(item._id,item.description,item.pic,item.name,item.price)">{{item.store.name}} - {{item.store.address.city}}, {{item.store.address.state}}</p>
+  </ion-item>
+
+
+  </ion-item>
+
+    </ion-list>
+</ion-content>
+</ion-view>

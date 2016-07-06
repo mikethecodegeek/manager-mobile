@@ -70,7 +70,7 @@ angular.module('app.services', [])
 .factory('showStores', function($http){
  return {
 	 getAll : function(){
-		 return $http.get('https://thawing-brook-24148.herokuapp.com/api/listings');
+		 return $http.get('https://thawing-brook-24148.herokuapp.com/api/stores/all');
 	 }
 
  }
