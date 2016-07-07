@@ -8,16 +8,16 @@ angular.module('app.routes', [])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-    .state('home', {
-      url: '/home',
-      templateUrl: 'templates/home.html',
-      controller: 'homeCtrl'
-    })
 
     .state('menu', {
       url: '/page1',
       templateUrl: 'templates/menu.html',
       controller: 'menuCtrl'
+    })
+    .state('home', {
+      url: '/home',
+      templateUrl: 'templates/home.html',
+      controller: 'homeCtrl'
     })
     .state('cart', {
       url: '/page2',
@@ -87,6 +87,6 @@ angular.module('app.routes', [])
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/home');
+  $urlRouterProvider.otherwise('/page1');
 
 });

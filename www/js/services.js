@@ -1,6 +1,5 @@
 angular.module('app.services', [])
 
-
 .factory('sharedCartService', ['$ionicPopup',function($ionicPopup){
 
 	var cartObj = {};
@@ -20,8 +19,8 @@ angular.module('app.services', [])
 		}
 		else{
 		    cartObj.cart.push( { "cart_item_id": id , "cart_item_image": image , "cart_item_name": name , "cart_item_price": price , "cart_item_qty": qty } );
-			cartObj.total_qty+=1;
-			cartObj.total_amount+=parseInt(price);
+			cartObj.total_qty+=qty;
+			cartObj.total_amount+=parseInt(qty *price);
 		}
 	};
 
@@ -68,9 +67,23 @@ angular.module('app.services', [])
 }])
 
 .factory('showStores', function($http){
+//	var host2 = "locahost:3000";
  return {
 	 getAll : function(){
-		 return $http.get('https://thawing-brook-24148.herokuapp.com/api/stores/all');
+		// return $http.get('https://thawing-brook-24148.herokuapp.com/api/stores/all');
+		 return $http.get('http://localhost:3000/api/stores/all');
+	 }
+
+ }
+
+})
+
+.factory('showListings', function($http){
+//	var host2 = "locahost:3000";
+ return {
+	 getAll : function(){
+		 //return $http.get('https://thawing-brook-24148.herokuapp.com/api/listings');
+		 return $http.get('http://localhost:3000/api/listings');
 	 }
 
  }

@@ -1,6 +1,5 @@
 angular.module('app.controllers', [])
 
-
 .controller('homeCtrl', function($scope,$http,sharedCartService,sharedFilterService,showStores) {
 
 
@@ -35,20 +34,21 @@ angular.module('app.controllers', [])
 	 };
 })
 
-.controller('menuCtrl', function($scope,$http,sharedCartService,sharedFilterService,showStores) {
+.controller('menuCtrl', function($scope,$http,sharedCartService,sharedFilterService,showListings) {
 
 
 	var cart = sharedCartService.cart;
 	$scope.noMoreItemsAvailable = false; // lazy load list
-  var listings = showStores.getAll()
-  .then(stores => {
-    console.log(stores)
-    $scope.menu_items = stores.data
+  var listings = showListings.getAll()
+  .then(items => {
+  //  console.log(items)
+    $scope.menu_items = items.data
   })
 
 	 //show product page
-	$scope.showProductInfo=function (id,desc,img,name,price) {
-    console.log(id,desc,img,name,price)
+	$scope.showProductInfo=function (id,desc,img,name,price,quantity) {
+  //  console.log(id,desc,img,name,price)
+//	console.log($scope.quantity)
 		 sessionStorage.setItem('product_info_id', id);
 		 sessionStorage.setItem('product_info_desc', desc);
 		 sessionStorage.setItem('product_info_img', img);
@@ -59,6 +59,7 @@ angular.module('app.controllers', [])
 
 	 //add to cart function
 	 $scope.addToCart=function(id,image,name,price){
+		 console.log($scope.quantity)
 		cart.add(id,image,name,price,1);
 	 };
 })
@@ -130,25 +131,31 @@ angular.module('app.controllers', [])
 .controller('loginCtrl', function($scope,$http,$ionicPopup,$state,$ionicHistory) {
 		$scope.user = {};
 
-		$scope.login = function() {
-			str="http://www.yoursite.com/foodcart/server_side/user-details.php?e="+$scope.user.email+"&p="+$scope.user.password;
-			$http.get(str)
-			.success(function (response){
-				$scope.user_details = response.records;
-				sessionStorage.setItem('loggedin_name', $scope.user_details.u_name);
-				sessionStorage.setItem('loggedin_id', $scope.user_details.u_id );
-				sessionStorage.setItem('loggedin_phone', $scope.user_details.u_phone);
-				sessionStorage.setItem('loggedin_address', $scope.user_details.u_address);
-				sessionStorage.setItem('loggedin_pincode', $scope.user_details.u_pincode);
+		$scope.login = function(user) {
+			console.log(user)
+			str="http:/localhost:3000/api/users/login";
+			//$http.get(str)
+			$http.post('http://localhost:3000/api/users/login/', {email: user.email, password: user.password})
+			.success(function (res){
+				$http.get('http://localhost:3000/api/users/profile/'+res)
+				.success(function (response) {
 
-				$ionicHistory.nextViewOptions({
-					disableAnimate: true,
-					disableBack: true
-				});
-				lastView = $ionicHistory.backView();
-				console.log('Last View',lastView);
-				if(lastView.stateId=="checkOut"){ $state.go('checkOut', {}, {location: "replace", reload: true}); }
-				else{$state.go('profile', {}, {location: "replace", reload: true});}
+					console.log(response)
+					$scope.user_details = response;
+					sessionStorage.setItem('loggedin_name', $scope.user_details.name);
+					sessionStorage.setItem('loggedin_id', $scope.user_details.email);
+					sessionStorage.setItem('loggedin_phone', $scope.user_details.phone);
+					sessionStorage.setItem('loggedin_address', $scope.user_details.address);
+
+					$ionicHistory.nextViewOptions({
+						disableAnimate: true,
+						disableBack: true
+					});
+					lastView = $ionicHistory.backView();
+					console.log('Last View',lastView);
+					if(lastView.stateId=="checkOut"){ $state.go('checkOut', {}, {location: "replace", reload: true}); }
+					else{$state.go('profile', {}, {location: "replace", reload: true});}
+				})
 
 			}).error(function() {
 					var alertPopup = $ionicPopup.alert({
@@ -161,25 +168,23 @@ angular.module('app.controllers', [])
 })
 
 .controller('signupCtrl', function($scope,$http,$ionicPopup,$state,$ionicHistory) {
-
+var host2 = "localhost:3000";
 	$scope.signup=function(data){
-
-			var link = 'https://thawing-brook-24148.herokuapp.com/api/users/register';
+      console.log(data)
+			var link =  'http://localhost:3000/api/users/register';
+      //var link = 'https://thawing-brook-24148.herokuapp.com/api/users/register'
       var thisuser = {
-      name: $scope.newName,
-      email: $scope.newEmail,
-      username: $scope.newUsername,
-      password: $scope.pwd1,
-      phone: $scope.newPhone,
+      name: data.newName,
+      email: data.newEmail,
+      username: data.newUsername,
+      password: data.pwd1,
+      phone: data.newPhone,
       address: {
-          city: $scope.newCity,
-          state: $scope.newState,
-          zip: $scope.newZip,
-          address: $scope.newAddress
-      },
-      pic: $scope.newPic,
-      usertype: "store",
-      authType: "user"
+          city: data.newCity,
+          state: data.newState,
+          zip: data.newZip,
+          address: data.newAddress
+      }
   };
 //  thisuser.joinDate = moment().format();
   thisuser.authType = 'user';
@@ -189,10 +194,10 @@ angular.module('app.controllers', [])
   };
 			$http.post(link, {user: user })
 			.then(function (res){
-				$scope.response = res.data.result;
-        console.log(response)
+				$scope.response = res.data;
+        console.log(res.data)
 
-				if($scope.response.created=="1"){
+				if($scope.response){
 					$scope.title="Account Created!";
 					$scope.template="Your account has been successfully created!";
 
@@ -306,9 +311,10 @@ angular.module('app.controllers', [])
 		$scope.price= sessionStorage.getItem('product_info_price');
 	});
 
-  $scope.addToCart=function(id,image,name,price){
-    console.log($scope.id,$scope.img,$scope.name,$scope.price)
-   cart.add($scope.id,$scope.img,$scope.name,$scope.price,1);
+  $scope.addToCart=function(quantity){
+  //  console.log($scope.id,$scope.img,$scope.name,$scope.price)
+		//console.log("quantity", quantity)
+   cart.add($scope.id,$scope.img,$scope.name,$scope.price,quantity);
   };
 
 

@@ -1,10 +1,6 @@
 <ion-view title="Product">
     <ion-content padding="'true'" class="has-header">
         <img ng-src="{{img}}" width="100%" height="auto" style="width: auto; height: 300px;">
-        <div class="button-bar">
-            <button class="button button-positive button-clear button-block icon ion-android-cart" ng-click="addToCart()"></button>
-
-        </div>
         <div class="list card">
             <div class="item item-divider">Description</div>
             <div class="item item-body">
@@ -14,6 +10,11 @@
                     <p>{{desc}}</p>
                 </div>
             </div>
+        </div>
+        <p>Quantity</p>
+        <input type="number" min="1" ng-model="quantity">
+        <div class="button-bar">
+          <button class="button button-positive button-block icon ion-android-cart" ng-click="addToCart(quantity)">Add to Cart</button>
         </div>
     </ion-content>
 </ion-view>
